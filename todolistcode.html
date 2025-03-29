@@ -2,11 +2,14 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TO-DO List with Calendar</title>
     <style>
       body {
         font-family: Arial, sans-serif;
         transition: background-color 0.5s ease;
+        margin: 0;
+        padding: 0;
       }
       .color-button {
         position: fixed;
@@ -24,8 +27,20 @@
       .color-button:hover {
         background-color: #0056b3;
       }
-      #todo-container {
+      #main-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
         margin: 20px;
+      }
+      #todo-container {
+        flex: 1;
+        max-width: 45%;
+      }
+      #calendar {
+        flex: 1;
+        max-width: 45%;
       }
       #header {
         text-align: center;
@@ -36,13 +51,6 @@
       .completed {
         color: green;
         text-decoration: line-through;
-      }
-      /* Calendar styling */
-      #calendar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 20px;
       }
       .calendar-header {
         display: flex;
@@ -61,7 +69,7 @@
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         grid-gap: 5px;
-        width: 50%;
+        width: 100%;
         margin-top: 20px;
       }
       .day {
@@ -70,7 +78,7 @@
         background-color: white;
         border: 1px solid #ddd;
         border-radius: 5px;
-        width: 90px;
+        width: 100%;
         height: 60px;
         display: flex;
         justify-content: flex-start;
@@ -113,30 +121,33 @@
   </head>
   <body>
     <button class="color-button" onclick="changeBackgroundColor()">🎨</button>
-    <div id="todo-container">
-      <div id="header"><h1>To Do List</h1></div>
-      <div id="todo-form">
-        <input type="text" id="input-box" placeholder="Add Task" />
-        <input type="date" id="date-box" />
-        <button id="input-button" onclick="addTask()">Add Task</button>
-      </div>
-      <h2>Task List</h2>
-      <ul id="list-container"></ul>
-      <div class="counter-container">
-        <div id="task-counters">
-          In Progress: <span id="progress-counter">0</span> | Completed: <span id="completed-counter">0</span> | Uncompleted: <span id="uncompleted-counter">0</span>
+    <div id="main-container">
+      <!-- Task List Section -->
+      <div id="todo-container">
+        <div id="header"><h1>To Do List</h1></div>
+        <div id="todo-form">
+          <input type="text" id="input-box" placeholder="Add Task" />
+          <input type="date" id="date-box" />
+          <button id="input-button" onclick="addTask()">Add Task</button>
+        </div>
+        <h2>Task List</h2>
+        <ul id="list-container"></ul>
+        <div class="counter-container">
+          <div id="task-counters">
+            In Progress: <span id="progress-counter">0</span> | Completed: <span id="completed-counter">0</span> | Uncompleted: <span id="uncompleted-counter">0</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Calendar Section -->
-    <div id="calendar">
-      <div class="calendar-header">
-        <button onclick="changeMonth(-1)">&#8249;</button>
-        <div class="month-name" id="month-name"></div>
-        <button onclick="changeMonth(1)">&#8250;</button>
+      <!-- Calendar Section -->
+      <div id="calendar">
+        <div class="calendar-header">
+          <button onclick="changeMonth(-1)">&#8249;</button>
+          <div class="month-name" id="month-name"></div>
+          <button onclick="changeMonth(1)">&#8250;</button>
+        </div>
+        <div class="days" id="days"></div>
       </div>
-      <div class="days" id="days"></div>
     </div>
 
     <script>
@@ -230,6 +241,19 @@
 
       function deleteTask(deleteButton) {
         const taskItem = deleteButton.parentElement;
+        const taskText = taskItem.querySelector(".task-text").textContent;
+
+  // Remove the task from the calendar
+  const dayElements = document.querySelectorAll(".day");
+  dayElements.forEach((dayElement) => {
+    const tasksInDay = dayElement.querySelectorAll(".task");
+    tasksInDay.forEach((taskElement) => {
+      if (taskElement.innerText === taskText) {
+        dayElement.removeChild(taskElement); // Remove the task from the calendar day box
+      }
+    });
+  });
+        // Remove the task from the list
         listContainer.removeChild(taskItem);
         updateCounters();
       }
@@ -239,17 +263,16 @@
         renderCalendar();
       }
 
-      
-  const rainbowColors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8B00FF"]; // Rainbow colors
-  let currentColorIndex = 0;
+      const rainbowColors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8B00FF"]; // Rainbow colors
+      let currentColorIndex = 0;
 
-  function changeBackgroundColor() {
-    // Set the background color to the current color in the array
-    document.body.style.backgroundColor = rainbowColors[currentColorIndex];
+      function changeBackgroundColor() {
+        // Set the background color to the current color in the array
+        document.body.style.backgroundColor = rainbowColors[currentColorIndex];
 
-    // Move to the next color in the array
-    currentColorIndex = (currentColorIndex + 1) % rainbowColors.length; // Loop back to the start after the last color
-  }
+        // Move to the next color in the array
+        currentColorIndex = (currentColorIndex + 1) % rainbowColors.length; // Loop back to the start after the last color
+      }
 
       function renderCalendar() {
         const month = currentDate.getMonth();
