@@ -138,18 +138,9 @@
         <button onclick="changeMonth(1)">&#8250;</button>
       </div>
       <div class="days" id="days"></div>
-      <ul id="task-list" class="task-list"></ul>
     </div>
 
     <script>
-      const colors = ["#f4f4f4", "#ffeb3b", "#ff5722", "#4caf50", "#2196f3", "#9c27b0"];
-      let currentIndex = 0;
-
-      function changeBackgroundColor() {
-        document.body.style.backgroundColor = colors[currentIndex];
-        currentIndex = (currentIndex + 1) % colors.length;
-      }
-
       const inputBox = document.getElementById("input-box");
       const dateBox = document.getElementById("date-box");
       const listContainer = document.getElementById("list-container");
@@ -158,7 +149,6 @@
       const uncompletedCounter = document.getElementById("uncompleted-counter");
       const daysElement = document.getElementById("days");
       const monthNameElement = document.getElementById("month-name");
-      const taskList = document.getElementById("task-list");
 
       let currentDate = new Date();
 
@@ -174,29 +164,46 @@
       function addTask() {
         const task = inputBox.value.trim();
         const dueDate = dateBox.value;
+
         if (!task) {
           alert("Please write down a task");
           return;
         }
 
+        // Add task to the general task list
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="task-text" onclick="toggleStatus(this)">${task}</span>
+          <span class="edit-btn" onclick="editTask(this)">Edit</span>
+          <span class="delete-btn" onclick="deleteTask(this)">Delete</span>
+        `;
+        listContainer.appendChild(li);
+        updateCounters();
+
+        // Add task to the specific day box in the calendar (if a due date is provided)
         if (dueDate) {
-          // Add task to the calendar
-          const taskElement = document.createElement("li");
-          taskElement.classList.add("task");
-          taskElement.innerText = `${task} (Due: ${new Date(dueDate).toLocaleDateString()})`;
-          taskList.appendChild(taskElement);
-        } else {
-          // Add task to the general list
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <span class="task-text" onclick="toggleStatus(this)">${task}</span>
-            <span class="edit-btn" onclick="editTask(this)">Edit</span>
-            <span class="delete-btn" onclick="deleteTask(this)">Delete</span>
-          `;
-          listContainer.appendChild(li);
-          updateCounters();
+          const selectedDate = new Date(dueDate);
+          const dayElements = document.querySelectorAll(".day");
+          const dayNumber = selectedDate.getDate();
+
+          // Find the corresponding day box
+          let taskAdded = false;
+          dayElements.forEach((dayElement) => {
+            if (parseInt(dayElement.innerText) === dayNumber) {
+              const taskElement = document.createElement("div");
+              taskElement.classList.add("task");
+              taskElement.innerText = task;
+              dayElement.appendChild(taskElement);
+              taskAdded = true;
+            }
+          });
+
+          if (!taskAdded) {
+            alert("The selected date is not in the current month.");
+          }
         }
 
+        // Clear the input fields
         inputBox.value = "";
         dateBox.value = "";
       }
