@@ -71,7 +71,7 @@
         background-color: white;
         border: 1px solid #ddd;
         border-radius: 5px;
-        width: 60px;
+        width: 90px;
         height: 60px;
         display: flex;
         justify-content: flex-start;
@@ -239,6 +239,18 @@
         currentDate.setMonth(currentDate.getMonth() + direction);
         renderCalendar();
       }
+
+      
+  const rainbowColors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8B00FF"]; // Rainbow colors
+  let currentColorIndex = 0;
+
+  function changeBackgroundColor() {
+    // Set the background color to the current color in the array
+    document.body.style.backgroundColor = rainbowColors[currentColorIndex];
+
+    // Move to the next color in the array
+    currentColorIndex = (currentColorIndex + 1) % rainbowColors.length; // Loop back to the start after the last color
+  }
 
       function renderCalendar() {
         const month = currentDate.getMonth();
