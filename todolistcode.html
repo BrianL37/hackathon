@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TO-DO List</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .in-progress { color: orange; }
+      .completed { color: green; text-decoration: line-through; }
+    </style>
+  </head>
+  <body>
+    <div id="todo-container">
+      <div id="header"><h1>To Do List</h1></div>
+      <div id="todo-form">
+        <input type="text" id="input-box" placeholder="Add Task" />
+        <button id="input-button" onclick="addTask()">Add</button>
+      </div>
+      <h2>Task List</h2>
+      <ul id="list-container"></ul>
+      <div class="counter-container">
+        <div id="task-counters">
+          In Progress: <span id="progress-counter">0</span> | Completed: <span id="completed-counter">0</span> | Uncompleted: <span id="uncompleted-counter">0</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const inputBox = document.getElementById("input-box");
+      const listContainer = document.getElementById("list-container");
+      const progressCounter = document.getElementById("progress-counter");
+      const completedCounter = document.getElementById("completed-counter");
+      const uncompletedCounter = document.getElementById("uncompleted-counter");
+
+      function updateCounters() {
+        const tasks = listContainer.querySelectorAll("li");
+        const inProgressTasks = listContainer.querySelectorAll(".in-progress");
+        const completedTasks = listContainer.querySelectorAll(".completed");
+        progressCounter.textContent = inProgressTasks.length;
+        completedCounter.textContent = completedTasks.length;
+        uncompletedCounter.textContent = tasks.length - inProgressTasks.length - completedTasks.length;
+      }
+
+      function addTask() {
+        const task = inputBox.value.trim();
+        if (!task) {
+          alert("Please write down a task");
+          return;
+        }
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="task-text" onclick="toggleStatus(this)">${task}</span>
+          <span class="edit-btn" onclick="editTask(this)">Edit</span>
+          <span class="delete-btn" onclick="deleteTask(this)">Delete</span>
+        `;
+        listContainer.appendChild(li);
+        inputBox.value = "";
+        updateCounters();
+      }
+
+      function toggleStatus(taskText) {
+        if (!taskText.classList.contains("in-progress") && !taskText.classList.contains("completed")) {
+          taskText.classList.add("in-progress");
+        } else if (taskText.classList.contains("in-progress")) {
+          taskText.classList.remove("in-progress");
+          taskText.classList.add("completed");
+        } else {
+          taskText.classList.remove("completed");
+        }
+        updateCounters();
+      }
+
+      function editTask(editButton) {
+        const taskItem = editButton.parentElement;
+        const taskText = taskItem.querySelector(".task-text").textContent;
+        const newTask = prompt("Edit your task:", taskText);
+        if (newTask !== null) {
+          taskItem.querySelector(".task-text").textContent = newTask.trim();
+        }
+      }
+
+      function deleteTask(deleteButton) {
+        const taskItem = deleteButton.parentElement;
+        listContainer.removeChild(taskItem);
+        updateCounters();
+      }
+    </script>
+  </body>
+</html>
