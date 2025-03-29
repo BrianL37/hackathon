@@ -138,7 +138,6 @@
         <button onclick="changeMonth(1)">&#8250;</button>
       </div>
       <div class="days" id="days"></div>
-      <input type="text" id="task-input" class="task-input" placeholder="Add task for selected day" />
       <ul id="task-list" class="task-list"></ul>
     </div>
 
@@ -157,6 +156,11 @@
       const progressCounter = document.getElementById("progress-counter");
       const completedCounter = document.getElementById("completed-counter");
       const uncompletedCounter = document.getElementById("uncompleted-counter");
+      const daysElement = document.getElementById("days");
+      const monthNameElement = document.getElementById("month-name");
+      const taskList = document.getElementById("task-list");
+
+      let currentDate = new Date();
 
       function updateCounters() {
         const tasks = listContainer.querySelectorAll("li");
@@ -170,20 +174,31 @@
       function addTask() {
         const task = inputBox.value.trim();
         const dueDate = dateBox.value;
-        if (!task || !dueDate) {
-          alert("Please write down a task and select a date");
+        if (!task) {
+          alert("Please write down a task");
           return;
         }
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <span class="task-text" onclick="toggleStatus(this)">${task} (Due: ${dueDate})</span>
-          <span class="edit-btn" onclick="editTask(this)">Edit</span>
-          <span class="delete-btn" onclick="deleteTask(this)">Delete</span>
-        `;
-        listContainer.appendChild(li);
+
+        if (dueDate) {
+          // Add task to the calendar
+          const taskElement = document.createElement("li");
+          taskElement.classList.add("task");
+          taskElement.innerText = `${task} (Due: ${new Date(dueDate).toLocaleDateString()})`;
+          taskList.appendChild(taskElement);
+        } else {
+          // Add task to the general list
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <span class="task-text" onclick="toggleStatus(this)">${task}</span>
+            <span class="edit-btn" onclick="editTask(this)">Edit</span>
+            <span class="delete-btn" onclick="deleteTask(this)">Delete</span>
+          `;
+          listContainer.appendChild(li);
+          updateCounters();
+        }
+
         inputBox.value = "";
         dateBox.value = "";
-        updateCounters();
       }
 
       function toggleStatus(taskText) {
@@ -200,10 +215,10 @@
 
       function editTask(editButton) {
         const taskItem = editButton.parentElement;
-        const taskText = taskItem.querySelector(".task-text").textContent.split(" (Due:")[0];
+        const taskText = taskItem.querySelector(".task-text").textContent;
         const newTask = prompt("Edit your task:", taskText);
         if (newTask !== null) {
-          taskItem.querySelector(".task-text").textContent = `${newTask.trim()} (Due: ${taskItem.querySelector(".task-text").textContent.split("Due: ")[1]}`;
+          taskItem.querySelector(".task-text").textContent = newTask.trim();
         }
       }
 
@@ -212,13 +227,6 @@
         listContainer.removeChild(taskItem);
         updateCounters();
       }
-
-      const daysElement = document.getElementById("days");
-      const monthNameElement = document.getElementById("month-name");
-      const taskInput = document.getElementById("task-input");
-      const taskList = document.getElementById("task-list");
-
-      let currentDate = new Date();
 
       function changeMonth(direction) {
         currentDate.setMonth(currentDate.getMonth() + direction);
@@ -241,22 +249,10 @@
           dayElement.innerText = i;
 
           dayElement.onclick = function () {
-            const selectedDate = new Date(year, month, i);
-            addTaskForDay(selectedDate);
+            dateBox.value = new Date(year, month, i).toISOString().split("T")[0];
           };
 
           daysElement.appendChild(dayElement);
-        }
-      }
-
-      function addTaskForDay(date) {
-        const task = taskInput.value.trim();
-        if (task) {
-          const taskElement = document.createElement("li");
-          taskElement.classList.add("task");
-          taskElement.innerText = `${task} (Due: ${date.toLocaleDateString()})`;
-          taskList.appendChild(taskElement);
-          taskInput.value = "";
         }
       }
 
