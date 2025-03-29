@@ -7,7 +7,23 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
+        transition: background-color 0.5s ease;
+      }
+      .color-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+      .color-button:hover {
+        background-color: #0056b3;
       }
       #todo-container {
         margin: 20px;
@@ -15,9 +31,13 @@
       #header {
         text-align: center;
       }
-      .in-progress { color: orange; }
-      .completed { color: green; text-decoration: line-through; }
-
+      .in-progress {
+        color: orange;
+      }
+      .completed {
+        color: green;
+        text-decoration: line-through;
+      }
       /* Calendar styling */
       #calendar {
         display: flex;
@@ -41,24 +61,24 @@
       .days {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        grid-gap: 5px; 
+        grid-gap: 5px;
         width: 50%;
         margin-top: 20px;
       }
       .day {
-    padding: 5px; /* Adjust padding for better spacing */
-    cursor: pointer;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 5px; /* Slightly rounded corners */
-    width: 60px; /* Fixed width for rectangular shape */
-    height: 60px; /* Fixed height for rectangular shape */
-    display: flex;
-    justify-content: flex-start; /* Align text horizontally to the left */
-    align-items: flex-start; /* Align text vertically to the top */
-    text-align: left; /* Ensure text alignment is left */
-    box-sizing: border-box; /* Include padding and border in width/height */
-  }
+        padding: 5px;
+        cursor: pointer;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        text-align: left;
+        box-sizing: border-box;
+      }
       .day:hover {
         background-color: #f0f0f0;
       }
@@ -78,8 +98,6 @@
         padding: 5px;
         border-radius: 5px;
       }
-
-      /* To-do list styling */
       #todo-form {
         margin: 10px;
         text-align: center;
@@ -95,6 +113,7 @@
     </style>
   </head>
   <body>
+    <button class="color-button" onclick="changeBackgroundColor()">🎨</button>
     <div id="todo-container">
       <div id="header"><h1>To Do List</h1></div>
       <div id="todo-form">
@@ -124,7 +143,14 @@
     </div>
 
     <script>
-      // To-do list variables
+      const colors = ["#f4f4f4", "#ffeb3b", "#ff5722", "#4caf50", "#2196f3", "#9c27b0"];
+      let currentIndex = 0;
+
+      function changeBackgroundColor() {
+        document.body.style.backgroundColor = colors[currentIndex];
+        currentIndex = (currentIndex + 1) % colors.length;
+      }
+
       const inputBox = document.getElementById("input-box");
       const dateBox = document.getElementById("date-box");
       const listContainer = document.getElementById("list-container");
@@ -177,7 +203,7 @@
         const taskText = taskItem.querySelector(".task-text").textContent.split(" (Due:")[0];
         const newTask = prompt("Edit your task:", taskText);
         if (newTask !== null) {
-          taskItem.querySelector(".task-text").textContent = newTask.trim();
+          taskItem.querySelector(".task-text").textContent = `${newTask.trim()} (Due: ${taskItem.querySelector(".task-text").textContent.split("Due: ")[1]}`;
         }
       }
 
@@ -187,11 +213,10 @@
         updateCounters();
       }
 
-      // Calendar section variables
-      const daysElement = document.getElementById('days');
-      const monthNameElement = document.getElementById('month-name');
-      const taskInput = document.getElementById('task-input');
-      const taskList = document.getElementById('task-list');
+      const daysElement = document.getElementById("days");
+      const monthNameElement = document.getElementById("month-name");
+      const taskInput = document.getElementById("task-input");
+      const taskList = document.getElementById("task-list");
 
       let currentDate = new Date();
 
@@ -207,12 +232,12 @@
         const lastDayOfMonth = new Date(year, month + 1, 0);
         const daysInMonth = lastDayOfMonth.getDate();
 
-        monthNameElement.innerText = `${firstDayOfMonth.toLocaleString('default', { month: 'long' })} ${year}`;
-        daysElement.innerHTML = '';
+        monthNameElement.innerText = `${firstDayOfMonth.toLocaleString("default", { month: "long" })} ${year}`;
+        daysElement.innerHTML = "";
 
         for (let i = 1; i <= daysInMonth; i++) {
-          const dayElement = document.createElement('div');
-          dayElement.classList.add('day');
+          const dayElement = document.createElement("div");
+          dayElement.classList.add("day");
           dayElement.innerText = i;
 
           dayElement.onclick = function () {
@@ -227,11 +252,11 @@
       function addTaskForDay(date) {
         const task = taskInput.value.trim();
         if (task) {
-          const taskElement = document.createElement('li');
-          taskElement.classList.add('task');
+          const taskElement = document.createElement("li");
+          taskElement.classList.add("task");
           taskElement.innerText = `${task} (Due: ${date.toLocaleDateString()})`;
           taskList.appendChild(taskElement);
-          taskInput.value = '';
+          taskInput.value = "";
         }
       }
 
