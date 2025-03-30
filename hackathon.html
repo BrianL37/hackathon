@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>TO-DO List with Calendar</title>
+  <meta charset="UTF-8">
+  <title>To-Do List + Calendar</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9fb;
+      background: #f9f9fb;
       margin: 0;
       padding: 0;
       color: #333;
@@ -20,47 +20,43 @@
       display: flex;
       justify-content: space-around;
       align-items: flex-start;
-      padding: 40px;
       flex-wrap: wrap;
+      padding: 40px;
     }
 
     #todo-container, #calendar {
       background: white;
+      padding: 30px;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      padding: 30px;
-      width: 100%;
       max-width: 500px;
+      width: 100%;
       margin-bottom: 30px;
-    }
-
-    #header h1 {
-      text-align: center;
-      margin-bottom: 20px;
     }
 
     #todo-form {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
+      flex-wrap: wrap;
       justify-content: center;
       margin-bottom: 20px;
     }
 
-    #todo-form input[type="text"], #todo-form input[type="date"] {
+    #todo-form input, #todo-form button {
       padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ccc;
+      font-size: 1rem;
       border-radius: 8px;
+    }
+
+    #todo-form input[type="text"], #todo-form input[type="date"] {
       flex: 1;
+      border: 1px solid #ccc;
     }
 
     #todo-form button {
-      padding: 10px 16px;
       background-color: #4caf50;
-      color: white;
+      color: #fff;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
     }
 
@@ -70,7 +66,7 @@
 
     #task-counters {
       margin-top: 20px;
-      font-size: 0.95em;
+      font-size: 0.95rem;
       background: #f0f0f0;
       padding: 10px;
       border-radius: 8px;
@@ -82,7 +78,6 @@
 
     li {
       margin-bottom: 10px;
-      line-height: 1.6em;
     }
 
     .icon-btn {
@@ -90,7 +85,6 @@
       height: 18px;
       margin-left: 8px;
       cursor: pointer;
-      vertical-align: middle;
     }
 
     .calendar-header {
@@ -102,21 +96,15 @@
 
     .calendar-header button {
       padding: 8px 12px;
-      font-size: 1em;
-      background-color: #007bff;
-      color: white;
+      background: #007bff;
       border: none;
+      color: #fff;
       border-radius: 6px;
       cursor: pointer;
     }
 
     .calendar-header button:hover {
-      background-color: #0056b3;
-    }
-
-    .month-name {
-      font-size: 1.4em;
-      font-weight: bold;
+      background: #0056b3;
     }
 
     .days {
@@ -127,12 +115,11 @@
 
     .day {
       height: 70px;
-      background-color: #f5f5f5;
+      background: #f5f5f5;
       border-radius: 10px;
       padding: 5px;
-      font-size: 0.9em;
+      font-size: 0.9rem;
       overflow-y: auto;
-      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
     }
 
     .day:hover {
@@ -140,30 +127,24 @@
     }
 
     .task {
-      font-size: 0.85em;
       background-color: #d4edda;
       border-left: 4px solid #28a745;
       padding: 4px 6px;
       border-radius: 4px;
+      font-size: 0.85rem;
       margin-top: 2px;
     }
 
-    .in-progress {
-      color: #ff9800;
-    }
-
-    .completed {
-      color: #4caf50;
-      text-decoration: line-through;
-    }
+    .in-progress { color: #ff9800; }
+    .completed { color: #4caf50; text-decoration: line-through; }
 
     .color-button {
       position: fixed;
       bottom: 20px;
       right: 20px;
       background-color: #6c63ff;
-      color: white;
       border: none;
+      color: white;
       padding: 14px;
       border-radius: 50%;
       font-size: 20px;
@@ -175,20 +156,18 @@
       background-color: #554ee3;
     }
 
-    /* Reward Modal */
     #reward-modal {
       display: none;
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      background-color: #fff;
+      transform: translate(-50%, -50%);
+      background: white;
       padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      z-index: 999;
       text-align: center;
-      animation: pop 0.3s ease;
     }
 
     #reward-modal button {
@@ -201,50 +180,21 @@
       cursor: pointer;
     }
 
-    @keyframes pop {
-      from {
-        transform: translate(-50%, -50%) scale(0.7);
-        opacity: 0;
-      }
-      to {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-      }
-    }
-
-    /* SHPE Logo Text */
     #shpe-logo-text {
       position: absolute;
       bottom: 20px;
       left: 30px;
-      font-size: 200px;
+      font-size: 140px;
       font-weight: 800;
       font-family: 'Segoe UI', sans-serif;
-      letter-spacing: 4px;
       animation: glowColorCycle 4s infinite ease-in-out;
     }
 
     @keyframes glowColorCycle {
-      0% {
-        color: #6c63ff;
-        text-shadow: 0 0 8px #6c63ff, 0 0 16px #6c63ff;
-      }
-      25% {
-        color: #00c2ff;
-        text-shadow: 0 0 8px #00c2ff, 0 0 16px #00c2ff;
-      }
-      50% {
-        color: #00ff9d;
-        text-shadow: 0 0 8px #00ff9d, 0 0 16px #00ff9d;
-      }
-      75% {
-        color: #ff4ec8;
-        text-shadow: 0 0 8px #ff4ec8, 0 0 16px #ff4ec8;
-      }
-      100% {
-        color: #6c63ff;
-        text-shadow: 0 0 8px #6c63ff, 0 0 16px #6c63ff;
-      }
+      0%, 100% { color: #6c63ff; text-shadow: 0 0 10px #6c63ff; }
+      25% { color: #00c2ff; text-shadow: 0 0 10px #00c2ff; }
+      50% { color: #00ff9d; text-shadow: 0 0 10px #00ff9d; }
+      75% { color: #ff4ec8; text-shadow: 0 0 10px #ff4ec8; }
     }
   </style>
 </head>
@@ -252,26 +202,22 @@
   <button class="color-button" onclick="changeBackgroundColor()">🎨</button>
 
   <div id="main-container">
-    <!-- Task List -->
     <div id="todo-container">
-      <div id="header"><h1>To Do List</h1></div>
+      <h1>To Do List</h1>
       <div id="todo-form">
-        <input type="text" id="input-box" placeholder="Add Task" />
-        <input type="date" id="date-box" />
-        <button id="input-button" onclick="addTask()">Add Task</button>
+        <input type="text" id="input-box" placeholder="Add Task">
+        <input type="date" id="date-box">
+        <button onclick="addTask()">Add Task</button>
       </div>
       <h2>Task List</h2>
       <ul id="list-container"></ul>
-      <div class="counter-container">
-        <div id="task-counters">
-          In Progress: <span id="progress-counter">0</span> |
-          Completed: <span id="completed-counter">0</span> |
-          Uncompleted: <span id="uncompleted-counter">0</span>
-        </div>
+      <div id="task-counters">
+        In Progress: <span id="progress-counter">0</span> |
+        Completed: <span id="completed-counter">0</span> |
+        Uncompleted: <span id="uncompleted-counter">0</span>
       </div>
     </div>
 
-    <!-- Calendar -->
     <div id="calendar">
       <div class="calendar-header">
         <button onclick="changeMonth(-1)">&#8249;</button>
@@ -282,14 +228,12 @@
     </div>
   </div>
 
-  <!-- SHPE Animated Text Logo -->
-  <div id="shpe-logo-text">SHPE</div>
-
-  <!-- Reward Modal -->
   <div id="reward-modal">
     <span id="reward-content"></span><br><br>
     <button onclick="closeReward()">Close</button>
   </div>
+
+  <div id="shpe-logo-text">SHPE</div>
 
   <script>
     const inputBox = document.getElementById("input-box");
@@ -305,157 +249,121 @@
 
     function updateCounters() {
       const tasks = listContainer.querySelectorAll("li");
-      const inProgressTasks = listContainer.querySelectorAll(".in-progress");
-      const completedTasks = listContainer.querySelectorAll(".completed");
-      progressCounter.textContent = inProgressTasks.length;
-      completedCounter.textContent = completedTasks.length;
-      uncompletedCounter.textContent = tasks.length - inProgressTasks.length - completedTasks.length;
+      const inProgress = listContainer.querySelectorAll(".in-progress");
+      const completed = listContainer.querySelectorAll(".completed");
+      progressCounter.textContent = inProgress.length;
+      completedCounter.textContent = completed.length;
+      uncompletedCounter.textContent = tasks.length - inProgress.length - completed.length;
     }
 
     function addTask() {
       const task = inputBox.value.trim();
       const dueDate = dateBox.value;
-
-      if (!task) {
-        alert("Please write down a task");
-        return;
-      }
+      if (!task) return alert("Enter a task");
 
       const li = document.createElement("li");
-      li.innerHTML = `
-        <span class="task-text" onclick="toggleStatus(this)">${task}</span>
-        <img src="Edit.jpeg" alt="Edit" class="icon-btn" onclick="editTask(this)">
-        <img src="Remove.jpeg" alt="Delete" class="icon-btn" onclick="deleteTask(this)">
-      `;
+      li.innerHTML = `<span class="task-text" onclick="toggleStatus(this)">${task}</span>
+        <img src="Edit.jpeg" class="icon-btn" onclick="editTask(this)">
+        <img src="Remove.jpeg" class="icon-btn" onclick="deleteTask(this)">`;
       listContainer.appendChild(li);
       updateCounters();
 
       if (dueDate) {
-        const selectedDateStr = dueDate;
-        const dayElements = document.querySelectorAll(".day");
-        let taskAdded = false;
-
-        dayElements.forEach((dayElement) => {
-          if (dayElement.getAttribute("data-date") === selectedDateStr) {
-            const taskElement = document.createElement("div");
-            taskElement.classList.add("task");
-            taskElement.innerText = task;
-            dayElement.appendChild(taskElement);
-            taskAdded = true;
+        document.querySelectorAll(".day").forEach(day => {
+          if (day.dataset.date === dueDate) {
+            const el = document.createElement("div");
+            el.className = "task";
+            el.textContent = task;
+            day.appendChild(el);
           }
         });
-
-        if (!taskAdded) {
-          alert("The selected date is not in the current calendar view.");
-        }
       }
 
       inputBox.value = "";
       dateBox.value = "";
     }
 
-    function toggleStatus(taskText) {
-      if (!taskText.classList.contains("in-progress") && !taskText.classList.contains("completed")) {
-        taskText.classList.add("in-progress");
-      } else if (taskText.classList.contains("in-progress")) {
-        taskText.classList.remove("in-progress");
-        taskText.classList.add("completed");
-
-        const completedTasks = listContainer.querySelectorAll(".completed").length;
-        if (completedTasks === 1) {
-          showReward('<img src="shark.png" alt="Good Job Shark" style="width:150px;"><br><strong>Great job on completing your first task!</strong>');
-        } else if (completedTasks === 2) {
-          showReward('<img src="shpe.gif" alt="Mexican Shark" style="width:200px;">');
-        } else if (completedTasks === 3) {
-          showReward('<video width="320" height="240" controls autoplay><source src="boom.mp4" type="video/mp4">Your browser does not support the video tag.</video>');
-        } else if (completedTasks > 3) {
-          showReward('<img src="proud.gif" alt="proud of you" style="width:200px;">');
-        }
+    function toggleStatus(span) {
+      if (!span.classList.contains("in-progress") && !span.classList.contains("completed")) {
+        span.classList.add("in-progress");
+      } else if (span.classList.contains("in-progress")) {
+        span.classList.remove("in-progress");
+        span.classList.add("completed");
+        triggerReward();
       } else {
-        taskText.classList.remove("completed");
+        span.classList.remove("completed");
       }
       updateCounters();
     }
 
-    function editTask(editButton) {
-      const taskItem = editButton.parentElement;
-      const taskText = taskItem.querySelector(".task-text").textContent;
-      const newTask = prompt("Edit your task:", taskText);
-      if (newTask !== null) {
-        taskItem.querySelector(".task-text").textContent = newTask.trim();
+    function triggerReward() {
+      const count = document.querySelectorAll(".completed").length;
+      if (count === 1) {
+        showReward(`<img src="shark.png" width="150"><br><strong>Great first task!</strong>`);
+      } else if (count === 2) {
+        showReward(`<img src="shpe.gif" width="200">`);
+      } else if (count === 3) {
+        showReward(`<video width="320" height="240" controls autoplay muted>
+          <source src="boom.mp4" type="video/mp4">
+        </video>`);
+      } else if (count > 3) {
+        showReward(`<img src="proud.gif" width="200"><br><strong>We are proud of you!</strong>`);
       }
     }
 
-    function deleteTask(deleteButton) {
-      const taskItem = deleteButton.parentElement;
-      const taskText = taskItem.querySelector(".task-text").textContent;
+    function editTask(btn) {
+      const item = btn.parentElement;
+      const text = item.querySelector(".task-text").textContent;
+      const updated = prompt("Edit your task:", text);
+      if (updated) item.querySelector(".task-text").textContent = updated.trim();
+    }
 
-      const dayElements = document.querySelectorAll(".day");
-      dayElements.forEach((dayElement) => {
-        const tasksInDay = dayElement.querySelectorAll(".task");
-        tasksInDay.forEach((taskElement) => {
-          if (taskElement.innerText === taskText) {
-            dayElement.removeChild(taskElement);
-          }
-        });
+    function deleteTask(btn) {
+      const item = btn.parentElement;
+      const text = item.querySelector(".task-text").textContent;
+
+      document.querySelectorAll(".day .task").forEach(task => {
+        if (task.textContent === text) task.remove();
       });
 
-      listContainer.removeChild(taskItem);
+      item.remove();
       updateCounters();
-    }
-
-    function changeMonth(direction) {
-      currentDate.setMonth(currentDate.getMonth() + direction);
-      renderCalendar();
-    }
-
-    const rainbowColors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8B00FF"];
-    let currentColorIndex = 0;
-
-    function changeBackgroundColor() {
-      document.body.style.backgroundColor = rainbowColors[currentColorIndex];
-      currentColorIndex = (currentColorIndex + 1) % rainbowColors.length;
     }
 
     function renderCalendar() {
       const month = currentDate.getMonth();
       const year = currentDate.getFullYear();
-      const firstDayOfMonth = new Date(year, month, 1);
-      const lastDayOfMonth = new Date(year, month + 1, 0);
-      const daysInMonth = lastDayOfMonth.getDate();
-      const startDay = firstDayOfMonth.getDay();
+      const firstDay = new Date(year, month, 1);
+      const totalDays = new Date(year, month + 1, 0).getDate();
+      const startDay = firstDay.getDay();
 
-      monthNameElement.innerText = `${firstDayOfMonth.toLocaleString("default", { month: "long" })} ${year}`;
+      monthNameElement.textContent = `${firstDay.toLocaleString("default", { month: "long" })} ${year}`;
       daysElement.innerHTML = "";
 
-      const totalBoxes = startDay + daysInMonth;
+      for (let i = 0; i < startDay + totalDays; i++) {
+        const dayBox = document.createElement("div");
+        dayBox.className = "day";
 
-      for (let i = 0; i < totalBoxes; i++) {
-        const dayElement = document.createElement("div");
-        dayElement.classList.add("day");
-
-        if (i < startDay) {
-          dayElement.innerHTML = "";
-        } else {
-          const dayNum = i - startDay + 1;
-          dayElement.innerText = dayNum;
-
-          const actualDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
-          dayElement.setAttribute("data-date", actualDate);
-
-          dayElement.onclick = function () {
-            dateBox.value = actualDate;
-          };
+        if (i >= startDay) {
+          const date = i - startDay + 1;
+          const iso = `${year}-${String(month + 1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+          dayBox.dataset.date = iso;
+          dayBox.textContent = date;
+          dayBox.onclick = () => { dateBox.value = iso; };
         }
 
-        daysElement.appendChild(dayElement);
+        daysElement.appendChild(dayBox);
       }
+    }
+
+    function changeMonth(dir) {
+      currentDate.setMonth(currentDate.getMonth() + dir);
+      renderCalendar();
     }
 
     function showReward(content) {
       const modal = document.getElementById("reward-modal");
-      const rewardContent = document.getElementById("reward-content");
-      rewardContent.innerHTML = content;
+      document.getElementById("reward-content").innerHTML = content;
       modal.style.display = "block";
     }
 
@@ -463,6 +371,13 @@
       document.getElementById("reward-modal").style.display = "none";
     }
 
+    function changeBackgroundColor() {
+      const colors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8B00FF"];
+      document.body.style.backgroundColor = colors[currentColorIndex];
+      currentColorIndex = (currentColorIndex + 1) % colors.length;
+    }
+
+    let currentColorIndex = 0;
     renderCalendar();
   </script>
 </body>
